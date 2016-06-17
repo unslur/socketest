@@ -38,7 +38,7 @@ namespace socketInfo
                 receiveThread.Start(clientSocket);
             }
         }
-
+        byte[] finishflag = new byte[18] { 0x02, 0x00, 0x7e, 0x00, 0x44, 0x00, 0x56, 0x00, 0x30, 0x00, 0x7c, 0x00, 0x30, 0x00, 0x7c, 0x00, 0x03, 0x00 };
         /// <summary>  
         /// 接收消息  
         /// </summary>  
@@ -48,12 +48,14 @@ namespace socketInfo
             Socket myClientSocket = (Socket)clientSocket;
             string data = "sjc";
             int i = 0;
+            int receiveNumber = 0;
+            receiveNumber = myClientSocket.Receive(result);
             while (true)
             {
                 try
                 {
                     //通过clientSocket接收数据  
-                    int receiveNumber = myClientSocket.Receive(result);
+                     receiveNumber = myClientSocket.Receive(result);
                     if (receiveNumber == 0) {
                         myClientSocket.Shutdown(SocketShutdown.Both);
                         myClientSocket.Close();
@@ -61,8 +63,19 @@ namespace socketInfo
                         break;
                     }
                     i++;
+
                     myClientSocket.Send(System.Text.Encoding.ASCII.GetBytes(data) ); ;
                     Console.WriteLine("{0},第{1}次",System.DateTime.Now,i);
+                    Console.WriteLine("接收客户端{0}消息{1}", myClientSocket.RemoteEndPoint.ToString(), Encoding.ASCII.GetString(result, 0, receiveNumber));
+                    receiveNumber = myClientSocket.Receive(result);
+                    if (receiveNumber == 0)
+                    {
+                        myClientSocket.Shutdown(SocketShutdown.Both);
+                        myClientSocket.Close();
+                        i = 0;
+                        break;
+                    }
+                    Console.WriteLine("{0},第{1}次", System.DateTime.Now, i);
                     Console.WriteLine("接收客户端{0}消息{1}", myClientSocket.RemoteEndPoint.ToString(), Encoding.ASCII.GetString(result, 0, receiveNumber));
                 }
                 catch (Exception ex)
