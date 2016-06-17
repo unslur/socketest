@@ -46,11 +46,15 @@ namespace socketInfo
         private static void ReceiveMessage(object clientSocket)
         {
             Console.WriteLine("{0}客户端连接上", System.DateTime.Now);
-            byte[] finishflag = new byte[18] { 0x02, 0x00, 0x7e, 0x00, 0x44, 0x00, 0x56, 0x00, 0x30, 0x00, 0x7c, 0x00, 0x30, 0x00, 0x7c, 0x00, 0x03, 0x00 };
+            byte[] finishmakerm = new byte[18] { 0x02, 0x00, 0x7e, 0x00, 0x44, 0x00, 0x56, 0x00, 0x30, 0x00, 0x7c, 0x00, 0x30, 0x00, 0x7c, 0x00, 0x03, 0x00 };
             Socket myClientSocket = (Socket)clientSocket;
+            byte[] finishwdj = new byte[6] { 0x50,0x50,0x52,0x52,0x53,0x00};
             string data = "sjc";
             int i = 0;
             int receiveNumber = 0;
+            receiveNumber = myClientSocket.Receive(result);
+            myClientSocket.Send(System.Text.Encoding.ASCII.GetBytes(data)); ;
+            Console.WriteLine("接收客户端{0}初始消息{1}", myClientSocket.RemoteEndPoint.ToString(), Encoding.ASCII.GetString(result, 0, receiveNumber));
             receiveNumber = myClientSocket.Receive(result);
             myClientSocket.Send(System.Text.Encoding.ASCII.GetBytes(data)); ;
             Console.WriteLine("接收客户端{0}初始消息{1}", myClientSocket.RemoteEndPoint.ToString(), Encoding.ASCII.GetString(result, 0, receiveNumber));
@@ -69,20 +73,20 @@ namespace socketInfo
                     }
                     i++;
 
-                    myClientSocket.Send(System.Text.Encoding.ASCII.GetBytes(data) ); ;
-                    Console.WriteLine("{0},第{1}次",System.DateTime.Now,i);
-                    Console.WriteLine("接收客户端{0}消息{1}", myClientSocket.RemoteEndPoint.ToString(), Encoding.UTF8.GetString(result, 0, receiveNumber));
-                    receiveNumber = myClientSocket.Receive(result);
-                    if (receiveNumber == 0)
-                    {
-                        myClientSocket.Shutdown(SocketShutdown.Both);
-                        myClientSocket.Close();
+                    //myClientSocket.Send(System.Text.Encoding.ASCII.GetBytes(data) ); ;
+                    //Console.WriteLine("{0},第{1}次",System.DateTime.Now,i);
+                    //Console.WriteLine("接收客户端{0}消息{1}", myClientSocket.RemoteEndPoint.ToString(), Encoding.UTF8.GetString(result, 0, receiveNumber));
+                    //receiveNumber = myClientSocket.Receive(result);
+                    //if (receiveNumber == 0)
+                    //{
+                    //    myClientSocket.Shutdown(SocketShutdown.Both);
+                    //    myClientSocket.Close();
                         
-                        Console.WriteLine("客户端关闭{0},总共溯源码个数:{1}", System.DateTime.Now, i);
-                        i = 0;
-                        break;
-                    }
-                    myClientSocket.Send(finishflag); 
+                    //    Console.WriteLine("客户端关闭{0},总共溯源码个数:{1}", System.DateTime.Now, i);
+                    //    i = 0;
+                    //    break;
+                    //}
+                    myClientSocket.Send(finishwdj); 
                     Console.WriteLine("{0},第{1}次", System.DateTime.Now, i);
                     Console.WriteLine("接收客户端{0}消息{1}", myClientSocket.RemoteEndPoint.ToString(), Encoding.UTF8.GetString(result, 0, receiveNumber));
                 }
