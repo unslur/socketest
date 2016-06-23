@@ -44,7 +44,7 @@ namespace socketInfo
         /// </summary>  
         /// <param name="clientSocket"></param>  
         private static void ReceiveMessage(object clientSocket)
-        {
+        {//markem
             Console.WriteLine("{0}客户端连接上", System.DateTime.Now);
             byte[] finishflag = new byte[18] { 0x02, 0x00, 0x7e, 0x00, 0x44, 0x00, 0x56, 0x00, 0x30, 0x00, 0x7c, 0x00, 0x30, 0x00, 0x7c, 0x00, 0x03, 0x00 };
             Socket myClientSocket = (Socket)clientSocket;
@@ -85,6 +85,7 @@ namespace socketInfo
                     myClientSocket.Send(finishflag); 
                     Console.WriteLine("{0},第{1}次", System.DateTime.Now, i);
                     Console.WriteLine("接收客户端{0}消息{1}", myClientSocket.RemoteEndPoint.ToString(), Encoding.UTF8.GetString(result, 0, receiveNumber));
+                    Thread.Sleep(500);
                 }
                 catch (Exception ex)
                 {
