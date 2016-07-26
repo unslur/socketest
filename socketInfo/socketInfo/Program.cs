@@ -15,7 +15,7 @@ namespace socketInfo
         static Socket serverSocket;
         static void Main(string[] args)
         {
-            IPAddress ip = IPAddress.Parse("127.0.0.1");
+            IPAddress ip = IPAddress.Parse("192.168.9.246");
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             serverSocket.Bind(new IPEndPoint(ip, myProt));  //绑定IP地址：端口  
             serverSocket.Listen(10);    //设定最多10个排队连接请求  
@@ -52,7 +52,16 @@ namespace socketInfo
             int i = 0;
             int receiveNumber = 0;
             receiveNumber = myClientSocket.Receive(result);
-            myClientSocket.Send(System.Text.Encoding.ASCII.GetBytes(data)); ;
+            myClientSocket.Send(System.Text.Encoding.ASCII.GetBytes(data));
+            receiveNumber = myClientSocket.Receive(result);
+            if (receiveNumber == 0)
+            {
+                myClientSocket.Shutdown(SocketShutdown.Both);
+                myClientSocket.Close();
+                Console.WriteLine("客户端关闭{0},总共溯源码个数:{1}", System.DateTime.Now, i);
+                i = 0;
+                myClientSocket.Send(finishflag);
+            }
             Console.WriteLine("接收客户端{0}初始消息{1}", myClientSocket.RemoteEndPoint.ToString(), Encoding.ASCII.GetString(result, 0, receiveNumber));
             while (true)
             {
